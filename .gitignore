@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+
+# Firebase service account (sensitive)
+scripts/service-account.json
+out/
+
+# Firebase project config
+.firebaserc
+
+# VS Code / Copilot config
+.copilot/
+.github/
+
+# Environment
+.env*.local
+
+# Vercel
+.vercel
+
+# Debug
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated videos
+*.mp4
+
+node_modules
+build-output.txt
+*~
+*.un~

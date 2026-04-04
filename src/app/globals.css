@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-primary: #1a3a5c;
+  --color-primary-light: #2a5a8c;
+  --color-accent: #d4a843;
+  --color-accent-light: #f0d080;
+  --color-bg: #0d1b2a;
+  --color-bg-card: #1b2838;
+  --color-success: #4ecdc4;
+  --color-danger: #ff6b6b;
+  --color-pink: #ff69b4;
+  --color-foreground: #f0f0f0;
+  --color-muted: #8899aa;
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #d4a843, #f0d080, #d4a843);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.font-heading {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-40vh) translateX(var(--drift, 10px)) scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70vh) translateX(var(--drift, 10px)) scale(0.8);
+  }
+}
+
+@keyframes reactionPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.85);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
