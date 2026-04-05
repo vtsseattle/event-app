@@ -35,3 +35,13 @@ export async function uploadPhoto(
   await uploadBytes(storageRef, file, { contentType: file.type });
   return getDownloadURL(storageRef);
 }
+
+export async function uploadFlyer(
+  eventId: string,
+  file: File,
+): Promise<string> {
+  const ext = file.name.split('.').pop() || 'jpg';
+  const storageRef = ref(storage, `events/${eventId}/flyer.${ext}`);
+  await uploadBytes(storageRef, file, { contentType: file.type });
+  return getDownloadURL(storageRef);
+}

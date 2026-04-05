@@ -5,8 +5,17 @@ import { useViewerCount } from '@/hooks/useViewerCount';
 import { useShoutouts } from '@/hooks/useShoutouts';
 import { usePrograms } from '@/hooks/usePrograms';
 import { usePledges } from '@/hooks/usePledges';
+import { useEventId } from '@/contexts/EventContext';
+import { getEventRef } from '@/lib/firestore';
+import { updateDoc } from 'firebase/firestore';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+
+const PHASES = [
+  { value: 'rsvp' as const, label: 'RSVP', icon: '📩', description: 'Pre-event — visitors see flyer and RSVP form' },
+  { value: 'live' as const, label: 'Live', icon: '🎉', description: 'Event day — attendees join the live experience' },
+  { value: 'ended' as const, label: 'Ended', icon: '🎭', description: 'Post-event — visitors see thank you message' },
+];
 
 export default function OverviewPage() {
   const { event, loading: eventLoading } = useEvent();
@@ -14,10 +23,21 @@ export default function OverviewPage() {
   const { shoutouts } = useShoutouts();
   const { programs } = usePrograms();
   const { pledges, totalKids, totalAmount } = usePledges();
+  const eventId = useEventId();
 
   const currentProgram = programs.find(
     (p) => p.id === event?.currentProgramId
   );
+
+  const currentPhase = event?.phase || 'live';
+
+  async function setPhase(phase: 'rsvp' | 'live' | 'ended') {
+    try {
+      await updateDoc(getEventRef(eventId), { phase });
+    } catch (error) {
+      console.error('Error setting phase:', error);
+    }
+  }
 
   const liveStatus = currentProgram
     ? `Now Playing: ${currentProgram.emoji} ${currentProgram.title}`
@@ -47,6 +67,30 @@ export default function OverviewPage() {
             📢 Announcement Active
           </Badge>
         )}
+      </div>
+
+      {/* Phase switcher */}
+      <div className="mb-6">
+        <h2 className="text-sm font-medium text-muted mb-2">Event Phase</h2>
+        <div className="grid grid-cols-3 gap-2">
+          {PHASES.filter((p) => p.value !== 'rsvp' || event?.features?.rsvp !== false).map((phase) => (
+            <button
+              key={phase.value}
+              onClick={() => setPhase(phase.value)}
+              className={`flex flex-col items-center gap-1 rounded-xl px-3 py-3 text-center transition-all ${
+                currentPhase === phase.value
+                  ? 'bg-accent text-bg ring-2 ring-accent/50'
+                  : 'border border-white/10 text-muted hover:text-foreground hover:bg-white/5'
+              }`}
+            >
+              <span className="text-xl">{phase.icon}</span>
+              <span className="text-xs font-semibold">{phase.label}</span>
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-muted mt-1.5">
+          {PHASES.find((p) => p.value === currentPhase)?.description}
+        </p>
       </div>
 
       {/* Stats grid */}

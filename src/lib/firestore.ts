@@ -58,6 +58,10 @@ export function getFeedbackRef(eventId: string): CollectionReference {
   return collection(db, "events", eventId, "feedback");
 }
 
+export function getRsvpsRef(eventId: string): CollectionReference {
+  return collection(db, "events", eventId, "rsvps");
+}
+
 // --- Event creation ---
 
 export async function createEvent(

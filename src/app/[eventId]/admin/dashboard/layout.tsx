@@ -31,6 +31,7 @@ export default function AdminDashboardLayout({
     { href: `/${eventId}/admin/dashboard/photos`, label: 'Photos', icon: '📸', feature: 'photos' as const },
     { href: `/${eventId}/admin/dashboard/trivia`, label: 'Trivia', icon: '🧠', feature: 'trivia' as const },
     { href: `/${eventId}/admin/dashboard/pledges`, label: 'Pledges', icon: '💛', feature: 'pledges' as const },
+    { href: `/${eventId}/admin/dashboard/rsvps`, label: 'RSVPs', icon: '📩', feature: 'rsvp' as const },
     { href: `/${eventId}/admin/dashboard/feedback`, label: 'Feedback', icon: '📝', feature: null },
     { href: `/${eventId}/admin/dashboard/screen`, label: 'Big Screen', icon: '🖥️', feature: null },
     { href: `/${eventId}/admin/dashboard/qrcode`, label: 'QR Code', icon: '📱', feature: null },

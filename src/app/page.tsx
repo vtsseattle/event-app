@@ -9,6 +9,7 @@ import type { EventFeatures } from '@/lib/types';
 
 const FEATURE_OPTIONS: { key: keyof EventFeatures; label: string; icon: string; locked?: boolean }[] = [
   { key: 'agenda', label: 'Agenda', icon: '📋', locked: true },
+  { key: 'rsvp', label: 'RSVPs', icon: '📩' },
   { key: 'shoutouts', label: 'Shoutouts', icon: '💬' },
   { key: 'reactions', label: 'Reactions', icon: '🎉' },
   { key: 'photos', label: 'Photos', icon: '📸' },
@@ -18,6 +19,7 @@ const FEATURE_OPTIONS: { key: keyof EventFeatures; label: string; icon: string; 
 
 const DEFAULT_FEATURES: EventFeatures = {
   agenda: true,
+  rsvp: true,
   shoutouts: true,
   reactions: true,
   photos: true,
@@ -75,6 +77,7 @@ export default function Home() {
         tagline: tagline.trim() || null,
         adminPasswordHash: adminPassword,
         features,
+        phase: features.rsvp ? 'rsvp' : 'live',
         createdAt: serverTimestamp(),
         currentProgramId: null,
         announcementText: '',

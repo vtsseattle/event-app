@@ -7,6 +7,7 @@ export interface EventFeatures {
   photos: boolean;
   trivia: boolean;
   pledges: boolean;
+  rsvp: boolean;
 }
 
 export interface Event {
@@ -20,6 +21,8 @@ export interface Event {
   bigScreenMode: string;
   adminPasswordHash: string;
   features?: EventFeatures;
+  phase?: 'rsvp' | 'live' | 'ended';
+  flyerUrl?: string;
   pledgeCostPerUnit?: number;
   pledgeLabel?: string;
   createdAt: Timestamp;
@@ -115,6 +118,17 @@ export interface Feedback {
   improve: string[];
   comment: string;
   createdAt: Timestamp;
+}
+
+export interface Rsvp {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: 'going' | 'maybe' | 'not-going';
+  numberOfGuests: number;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 function parseTime(time: string): number {
