@@ -8,6 +8,8 @@
 
 Attendees scan a QR code at the venue, enter their name, and instantly get a premium mobile experience — live reactions, trivia, shoutouts, program schedule, photo sharing, and a donation pledge system — all synchronized in real time. An admin/emcee panel backstage controls the entire experience.
 
+Before the event, share the RSVP link so guests can confirm attendance. On event day, switch to live mode and attendees join the full experience.
+
 Anyone can create an event and share a join code with their audience.
 
 ### Three Interfaces
@@ -30,6 +32,7 @@ Anyone can create an event and share a join code with their audience.
 
 ## Features
 
+- 📩 **RSVP** — Pre-event RSVP page with event flyer, Going/Maybe/Can't Make It, guest count, and edit-on-return
 - 🎉 **Live Reactions** — Floating emoji animations synced across all phones
 - 🧠 **Live Trivia** — Timed questions with leaderboard, pushed by emcee
 - 💬 **Shoutouts** — Audience messages with upvotes, moderated by admin
@@ -38,6 +41,16 @@ Anyone can create an event and share a join code with their audience.
 - 📋 **Program Schedule** — Real-time agenda with "Now Playing" indicator
 - 📢 **Announcements** — Push banners to all attendee phones
 - 🔲 **QR Code** — Auto-generated for venue entry
+
+### Event Phases
+
+Events have three admin-controlled phases:
+
+| Phase | What visitors see | Use when |
+|-------|------------------|----------|
+| **RSVP** | Event flyer + RSVP form | Weeks before the event |
+| **Live** | Join flow → full app experience | Day of the event |
+| **Ended** | "Event has ended" thank you page | After the event |
 
 ---
 
@@ -175,12 +188,14 @@ Your app will be live at `https://your-app.vercel.app`.
 3. Fill in: **Event ID** (URL slug, e.g. `spring-gala-2026`), **Event Name**, optional **Tagline**, and an **Admin Password**
 4. Choose which features to enable for your event:
    - **Agenda** (always on) — Program schedule with "Now Playing"
+   - **RSVPs** — Pre-event RSVP page with flyer and guest tracking
    - **Shoutouts** — Audience messages with upvotes
    - **Reactions** — Live floating emoji animations
    - **Photos** — Shared photo wall
    - **Trivia** — Timed quiz questions with leaderboard
    - **Pledges** — Donation pledge tracker
-5. You'll be taken to the admin dashboard
+5. If RSVP is enabled, the event starts in **RSVP phase** — visitors see the RSVP page first
+6. You'll be taken to the admin dashboard
 
 Only enabled features appear in attendee navigation, the event home page, and the admin dashboard.
 
@@ -194,6 +209,8 @@ From the admin dashboard:
 ### Running the Event
 
 As the admin/emcee:
+- **Event Phase** — Switch between RSVP / Live / Ended from the dashboard overview
+- **RSVPs** — View RSVP list with Going/Maybe/Not Going counts, upload event flyer
 - **Programs** — Add your agenda items, mark what's playing now
 - **Now Playing** — Switch the active program in one tap
 - **Trivia** — Push timed questions, see live answers, reveal results
