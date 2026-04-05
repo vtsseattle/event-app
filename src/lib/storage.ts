@@ -45,3 +45,13 @@ export async function uploadFlyer(
   await uploadBytes(storageRef, file, { contentType: file.type });
   return getDownloadURL(storageRef);
 }
+
+export async function uploadEventIcon(
+  eventId: string,
+  file: File,
+): Promise<string> {
+  const ext = file.name.split('.').pop() || 'png';
+  const storageRef = ref(storage, `events/${eventId}/icon.${ext}`);
+  await uploadBytes(storageRef, file, { contentType: file.type });
+  return getDownloadURL(storageRef);
+}

@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { EventProvider } from '@/contexts/EventContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import DynamicFavicon from '@/components/DynamicFavicon';
 
 export default function EventIdLayout({
   children,
@@ -14,7 +15,10 @@ export default function EventIdLayout({
 
   return (
     <EventProvider eventId={eventId}>
-      <AuthProvider eventId={eventId}>{children}</AuthProvider>
+      <AuthProvider eventId={eventId}>
+        <DynamicFavicon />
+        {children}
+      </AuthProvider>
     </EventProvider>
   );
 }

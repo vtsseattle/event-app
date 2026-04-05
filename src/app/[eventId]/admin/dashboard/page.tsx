@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useRef } from 'react';
 import { useEvent } from '@/hooks/useEvent';
 import { useViewerCount } from '@/hooks/useViewerCount';
 import { useShoutouts } from '@/hooks/useShoutouts';
@@ -7,6 +8,7 @@ import { usePrograms } from '@/hooks/usePrograms';
 import { usePledges } from '@/hooks/usePledges';
 import { useEventId } from '@/contexts/EventContext';
 import { getEventRef } from '@/lib/firestore';
+import { uploadEventIcon } from '@/lib/storage';
 import { updateDoc } from 'firebase/firestore';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -30,12 +32,45 @@ export default function OverviewPage() {
   );
 
   const currentPhase = event?.phase || 'live';
+  const [uploadingIcon, setUploadingIcon] = useState(false);
+  const iconInputRef = useRef<HTMLInputElement>(null);
 
   async function setPhase(phase: 'rsvp' | 'live' | 'ended') {
     try {
       await updateDoc(getEventRef(eventId), { phase });
     } catch (error) {
       console.error('Error setting phase:', error);
+    }
+  }
+
+  async function handleIconUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+    if (file.size > 512 * 1024) {
+      alert('Icon must be under 512 KB');
+      return;
+    }
+    setUploadingIcon(true);
+    try {
+      const iconUrl = await uploadEventIcon(eventId, file);
+      await updateDoc(getEventRef(eventId), { iconUrl });
+    } catch (error) {
+      console.error('Error uploading icon:', error);
+    } finally {
+      setUploadingIcon(false);
+      if (iconInputRef.current) iconInputRef.current.value = '';
+    }
+  }
+
+  async function removeIcon() {
+    try {
+      await updateDoc(getEventRef(eventId), { iconUrl: '' });
+    } catch (error) {
+      console.error('Error removing icon:', error);
     }
   }
 
@@ -91,6 +126,46 @@ export default function OverviewPage() {
         <p className="text-xs text-muted mt-1.5">
           {PHASES.find((p) => p.value === currentPhase)?.description}
         </p>
+      </div>
+
+      {/* Event Icon */}
+      <div className="mb-6">
+        <h2 className="text-sm font-medium text-muted mb-2">Event Icon (Favicon)</h2>
+        <div className="flex items-center gap-4">
+          {event?.iconUrl ? (
+            <img
+              src={event.iconUrl}
+              alt="Event icon"
+              className="h-12 w-12 rounded-lg object-cover border border-white/10"
+            />
+          ) : (
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-white/10 bg-bg text-2xl">
+              🎉
+            </div>
+          )}
+          <div className="flex gap-2">
+            <label className="cursor-pointer rounded-lg border border-white/10 px-3 py-1.5 text-sm text-foreground hover:bg-white/5 transition-colors">
+              {uploadingIcon ? 'Uploading…' : event?.iconUrl ? 'Change' : 'Upload Icon'}
+              <input
+                ref={iconInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleIconUpload}
+                className="hidden"
+                disabled={uploadingIcon}
+              />
+            </label>
+            {event?.iconUrl && (
+              <button
+                onClick={removeIcon}
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-muted hover:text-danger hover:bg-white/5 transition-colors"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+        <p className="text-xs text-muted mt-1.5">Square image recommended, max 512 KB. Used as the browser tab icon.</p>
       </div>
 
       {/* Stats grid */}

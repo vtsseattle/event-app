@@ -23,6 +23,7 @@ export interface Event {
   features?: EventFeatures;
   phase?: 'rsvp' | 'live' | 'ended';
   flyerUrl?: string;
+  iconUrl?: string;
   pledgeCostPerUnit?: number;
   pledgeLabel?: string;
   createdAt: Timestamp;
