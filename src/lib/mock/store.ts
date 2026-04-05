@@ -116,7 +116,7 @@ class MockStore {
   private load() {
     if (typeof window === 'undefined') return;
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw) as Record<string, Record<string, any>>;
       for (const [collPath, docs] of Object.entries(parsed)) {
@@ -142,10 +142,24 @@ class MockStore {
         }
         obj[collPath] = collObj;
       }
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
     } catch {
       /* storage full – ignore */
     }
+  }
+
+  // Cross-tab sync: reload data when another tab writes to localStorage
+  listenForCrossTabChanges() {
+    if (typeof window === 'undefined') return;
+    window.addEventListener('storage', (e) => {
+      if (e.key !== STORAGE_KEY) return;
+      this.collections.clear();
+      this.load();
+      // Fire all listeners so UI updates
+      for (const [, set] of this.listeners) {
+        for (const cb of set) setTimeout(cb, 0);
+      }
+    });
   }
 
   // --- notifications ---
@@ -240,6 +254,9 @@ const GLOBAL_KEY = '__mockFirebaseStore';
 
 export const mockStore: MockStore = (() => {
   const g = globalThis as any;
-  if (!g[GLOBAL_KEY]) g[GLOBAL_KEY] = new MockStore();
+  if (!g[GLOBAL_KEY]) {
+    g[GLOBAL_KEY] = new MockStore();
+    g[GLOBAL_KEY].listenForCrossTabChanges();
+  }
   return g[GLOBAL_KEY];
 })();
