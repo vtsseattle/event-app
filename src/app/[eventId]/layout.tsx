@@ -10,7 +10,7 @@ export default function EventIdLayout({
   children: React.ReactNode;
 }) {
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = (params.eventId as string).toLowerCase();
 
   return (
     <EventProvider eventId={eventId}>
