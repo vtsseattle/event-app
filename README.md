@@ -177,6 +177,26 @@ Open [http://localhost:3000](http://localhost:3000). You should see the landing 
 
 Your app will be live at `https://your-app.vercel.app`.
 
+### Run Without Firebase (Mock Mode)
+
+To run the app locally with **no Firebase project required**, use mock mode. All data is stored in the browser's memory (sessionStorage) and auth UIDs persist via localStorage.
+
+```bash
+NEXT_PUBLIC_USE_MOCK_FIREBASE=true npm run dev
+```
+
+On Windows PowerShell:
+```powershell
+$env:NEXT_PUBLIC_USE_MOCK_FIREBASE="true"; npm run dev
+```
+
+**How it works:**
+- All Firebase services (Firestore, Auth, Storage) are replaced with in-memory mocks via module aliasing
+- Admin login accepts any password
+- Data persists across page navigations and survives in the same browser session
+- A full page refresh keeps Firestore data (sessionStorage) but uploaded images are lost (in-memory blob URLs)
+- Great for UI development, testing features, and demos without any cloud setup
+
 ---
 
 ## How to Use

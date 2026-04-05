@@ -36,6 +36,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // In mock mode, accept any password (server has no access to client-side mock store)
+    if (process.env.NEXT_PUBLIC_USE_MOCK_FIREBASE === 'true') {
+      return NextResponse.json({ valid: true });
+    }
+
     const db = getAdminFirestore();
     const eventDoc = await db.collection('events').doc(eventId).get();
 
