@@ -320,6 +320,13 @@ export default function RsvpPage() {
             )}
           </div>
         </Card>
+
+        {/* Add to Calendar — shown on the form so users can save the date upfront */}
+        {event && (
+          <div className="mt-4">
+            <AddToCalendar event={event} eventId={eventId} />
+          </div>
+        )}
       </div>
     </div>
   );

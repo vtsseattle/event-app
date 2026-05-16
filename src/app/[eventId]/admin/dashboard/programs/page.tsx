@@ -65,6 +65,7 @@ export default function ProgramsPage() {
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [eventStartTime, setEventStartTime] = useState('');
+  const [eventDate, setEventDate] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
@@ -190,6 +191,12 @@ export default function ProgramsPage() {
     setEventStartTime('');
   }
 
+  async function handleSaveEventDate() {
+    if (!eventDate.trim()) return;
+    await updateDocument(getEventRef(eventId), { date: eventDate.trim() });
+    setEventDate('');
+  }
+
   async function handleMove(index: number, direction: 'up' | 'down') {
     const swapIndex = direction === 'up' ? index - 1 : index + 1;
     if (swapIndex < 0 || swapIndex >= programs.length) return;
@@ -256,7 +263,21 @@ export default function ProgramsPage() {
         </Button>
       </div>
 
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-3 flex flex-wrap items-center gap-3">
+        <span className="text-sm text-muted">Event date:</span>
+        <span className="font-semibold text-foreground">{event?.date || 'not set'}</span>
+        <Input
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          placeholder="e.g. June 06, 2026"
+          className="w-48"
+        />
+        <Button size="sm" variant="secondary" onClick={handleSaveEventDate}
+          disabled={!eventDate.trim()}>Update</Button>
+      </div>
+      <p className="mb-3 -mt-2 text-xs text-muted">Used for the &ldquo;Add to Calendar&rdquo; button. Use a JS-parseable format like &ldquo;June 06, 2026&rdquo;.</p>
+
+      <div className="mb-6 flex flex-wrap items-center gap-3">
         <span className="text-sm text-muted">Event starts at:</span>
         <span className="font-semibold text-foreground">{event?.eventStartTime || '5:00 PM'}</span>
         <Input
