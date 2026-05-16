@@ -2,11 +2,13 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Event icon (favicon) — authenticated users can read/upload, max 512KB images
-    match /events/{eventId}/icon.{ext} {
+    // Event-level files (icon, flyer) directly under events/{eventId}/ —
+    // authenticated users can read/upload, max 5MB images. Nested paths
+    // (programs/, photos/) are covered by their own rules below.
+    match /events/{eventId}/{fileName} {
       allow read: if request.auth != null;
       allow write: if request.auth != null
-        && request.resource.size < 512 * 1024
+        && request.resource.size < 5 * 1024 * 1024
         && request.resource.contentType.matches('image/.*');
     }
 
