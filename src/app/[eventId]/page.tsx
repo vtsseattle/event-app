@@ -1,14 +1,46 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useEvent } from '@/hooks/useEvent';
+import { getDoc } from 'firebase/firestore';
+import { signInAnonymously } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { getEventRef } from '@/lib/firestore';
 import { useEventId } from '@/contexts/EventContext';
+import type { Event } from '@/lib/types';
 
 export default function EventLandingPage() {
-  const { event, loading } = useEvent();
   const eventId = useEventId();
   const router = useRouter();
+  const [event, setEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Bootstrap: anonymously sign in (required by Firestore rules) and read the event.
+  // We do this directly rather than via useEvent() because /rsvp signs in via useRsvp,
+  // but this landing page has no other auth path — without this, fresh visitors on the
+  // public URL hit "Event Not Found" because the Firestore read is denied.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        if (auth && !auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+        const snap = await getDoc(getEventRef(eventId));
+        if (cancelled) return;
+        if (snap.exists()) {
+          setEvent(snap.data() as Event);
+        }
+      } catch (err) {
+        console.error('[EventLandingPage] failed to load event', err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [eventId]);
 
   useEffect(() => {
     if (loading || !event) return;
