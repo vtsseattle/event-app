@@ -54,7 +54,7 @@ export default function RsvpPage() {
   if (myRsvp && !editing && initialized && !submitted) {
     const statusInfo = STATUS_OPTIONS.find((s) => s.value === myRsvp.status);
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-4">
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-md animate-[fadeIn_0.6s_ease-out]">
           {/* Event header */}
           <div className="mb-6 text-center">
@@ -65,6 +65,20 @@ export default function RsvpPage() {
               <p className="mt-2 text-muted">{event.tagline}</p>
             )}
           </div>
+
+          {/* Flyer */}
+          {event?.flyerUrl && (
+            <div className="mb-6 overflow-hidden rounded-xl border border-white/10">
+              <Image
+                src={event.flyerUrl}
+                alt={`${event.name} flyer`}
+                width={600}
+                height={800}
+                className="w-full h-auto object-contain"
+                priority
+              />
+            </div>
+          )}
 
           <Card>
             <div className="flex flex-col items-center gap-4 py-4 text-center">
