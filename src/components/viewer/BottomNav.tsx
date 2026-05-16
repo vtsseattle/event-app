@@ -17,6 +17,7 @@ export default function BottomNav() {
     { href: `/${eventId}/event/react`, label: 'React', icon: '🎉', feature: 'reactions' as const },
     { href: `/${eventId}/event/shoutouts`, label: 'Shoutouts', icon: '💬', feature: 'shoutouts' as const },
     { href: `/${eventId}/event/photos`, label: 'Photos', icon: '📸', feature: 'photos' as const },
+    { href: `/${eventId}/event/feedback`, label: 'Feedback', icon: '📝', feature: 'feedback' as const },
   ];
 
   const tabs = allTabs.filter((tab) => !tab.feature || !f || f[tab.feature] !== false);

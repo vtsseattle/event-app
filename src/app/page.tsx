@@ -15,6 +15,7 @@ const FEATURE_OPTIONS: { key: keyof EventFeatures; label: string; icon: string; 
   { key: 'photos', label: 'Photos', icon: '📸' },
   { key: 'trivia', label: 'Trivia', icon: '🧠' },
   { key: 'pledges', label: 'Pledges', icon: '💚' },
+  { key: 'feedback', label: 'Feedback', icon: '📝' },
 ];
 
 const DEFAULT_FEATURES: EventFeatures = {
@@ -25,6 +26,7 @@ const DEFAULT_FEATURES: EventFeatures = {
   photos: true,
   trivia: true,
   pledges: true,
+  feedback: true,
 };
 
 export default function Home() {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDoc } from 'firebase/firestore';
 import { signInAnonymously } from 'firebase/auth';
@@ -77,6 +78,7 @@ export default function EventLandingPage() {
 
   // Ended phase UI
   if (event.phase === 'ended') {
+    const feedbackEnabled = event.features?.feedback !== false;
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <div className="animate-[fadeIn_0.6s_ease-out]">
@@ -90,6 +92,15 @@ export default function EventLandingPage() {
           <p className="mt-6 text-lg text-foreground">
             This event has ended. Thank you for being a part of it!
           </p>
+          {feedbackEnabled && (
+            <Link
+              href={`/${eventId}/event/feedback`}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-base font-semibold text-bg transition-all hover:bg-accent-light"
+            >
+              <span>📝</span>
+              <span>Share Your Feedback</span>
+            </Link>
+          )}
         </div>
       </div>
     );

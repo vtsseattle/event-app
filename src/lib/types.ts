@@ -8,6 +8,7 @@ export interface EventFeatures {
   trivia: boolean;
   pledges: boolean;
   rsvp: boolean;
+  feedback: boolean;
 }
 
 export interface Event {

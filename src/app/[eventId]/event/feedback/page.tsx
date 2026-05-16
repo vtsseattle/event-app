@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useFeedback } from '@/hooks/useFeedback';
+import { useEvent } from '@/hooks/useEvent';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -61,6 +62,7 @@ function ChipSelect({
 }
 
 export default function FeedbackPage() {
+  const { event } = useEvent();
   const { submitFeedback } = useFeedback();
   const [rating, setRating] = useState(0);
   const [enjoyed, setEnjoyed] = useState<string[]>([]);
@@ -68,6 +70,21 @@ export default function FeedbackPage() {
   const [comment, setComment] = useState('');
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Respect feature flag — hide the form if the organizer turned feedback off.
+  if (event && event.features?.feedback === false) {
+    return (
+      <div className="flex flex-col items-center gap-3 px-4 py-16 text-center">
+        <span className="text-5xl">🙊</span>
+        <h1 className="font-heading text-2xl font-bold text-foreground">
+          Feedback Not Available
+        </h1>
+        <p className="text-muted max-w-sm">
+          The organizer hasn&apos;t enabled feedback collection for this event.
+        </p>
+      </div>
+    );
+  }
 
   const canSend = rating > 0 && !sending;
 
