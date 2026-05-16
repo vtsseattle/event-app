@@ -10,6 +10,57 @@ import { updateDoc } from 'firebase/firestore';
 import { uploadFlyer } from '@/lib/storage';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
+import type { Rsvp } from '@/lib/types';
+
+function csvEscape(value: string | number | undefined | null): string {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  if (/[",\n\r]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+function statusLabel(status: Rsvp['status']): string {
+  if (status === 'going') return 'Going';
+  if (status === 'maybe') return 'Maybe';
+  return 'Not Going';
+}
+
+function rsvpsToCsv(rsvps: Rsvp[]): string {
+  const header = [
+    'Name',
+    'Email',
+    'Phone',
+    'Status',
+    'Guests',
+    'Submitted',
+    'Updated',
+  ];
+  const rows = rsvps.map((r) => [
+    csvEscape(r.name),
+    csvEscape(r.email),
+    csvEscape(r.phone),
+    csvEscape(statusLabel(r.status)),
+    csvEscape(r.numberOfGuests),
+    csvEscape(r.createdAt?.toDate?.().toISOString() ?? ''),
+    csvEscape(r.updatedAt?.toDate?.().toISOString() ?? ''),
+  ]);
+  return [header.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+}
+
+function downloadCsv(filename: string, csv: string) {
+  // Prepend BOM so Excel detects UTF-8 correctly.
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 export default function AdminRsvpPage() {
   const eventId = useEventId();
@@ -36,6 +87,13 @@ export default function AdminRsvpPage() {
     } catch (error) {
       console.error('Error removing flyer:', error);
     }
+  }
+
+  function handleExportCsv() {
+    if (rsvps.length === 0) return;
+    const csv = rsvpsToCsv(rsvps);
+    const stamp = new Date().toISOString().slice(0, 10);
+    downloadCsv(`${eventId}-rsvps-${stamp}.csv`, csv);
   }
 
   if (loading) {
@@ -129,9 +187,18 @@ export default function AdminRsvpPage() {
       </div>
 
       {/* RSVP list */}
-      <h2 className="text-lg font-semibold text-foreground mb-3">
-        All RSVPs
-      </h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-foreground">
+          All RSVPs
+        </h2>
+        <button
+          onClick={handleExportCsv}
+          disabled={rsvps.length === 0}
+          className="rounded-lg border border-white/20 px-3 py-1.5 text-sm text-foreground hover:border-accent/50 hover:text-accent disabled:cursor-not-allowed disabled:opacity-40 transition-colors"
+        >
+          ⬇ Download CSV
+        </button>
+      </div>
 
       {rsvps.length === 0 ? (
         <p className="text-muted text-sm">No RSVPs yet.</p>
