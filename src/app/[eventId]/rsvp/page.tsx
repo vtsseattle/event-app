@@ -8,6 +8,7 @@ import { useEventId } from '@/contexts/EventContext';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Card from '@/components/ui/Card';
+import AddToCalendar from '@/components/viewer/AddToCalendar';
 
 type RsvpStatus = 'going' | 'maybe' | 'not-going';
 
@@ -100,6 +101,13 @@ export default function RsvpPage() {
             </div>
           </Card>
 
+          {/* Add to Calendar (only for confirmed attendees) */}
+          {event && (myRsvp.status === 'going' || myRsvp.status === 'maybe') && (
+            <div className="mt-4">
+              <AddToCalendar event={event} eventId={eventId} />
+            </div>
+          )}
+
           {/* RSVP counts */}
           <div className="mt-4 grid grid-cols-3 gap-2 text-center">
             <div className="rounded-lg border border-white/10 bg-bg-card px-3 py-2">
@@ -136,6 +144,11 @@ export default function RsvpPage() {
               ? "We hope you can make it! We'll save a spot for you."
               : "Sorry you can't make it. Maybe next time!"}
           </p>
+          {event && (status === 'going' || status === 'maybe') && (
+            <div className="mt-6 mx-auto w-full max-w-xs">
+              <AddToCalendar event={event} eventId={eventId} />
+            </div>
+          )}
           <button
             onClick={() => {
               setSubmitted(false);
